@@ -59,7 +59,7 @@ export function ClienteForm(props: Props) {
   const { toast } = useToast();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    setDisebleBtn(false);
+    setDisebleBtn(true);
 
     axios
       .post(
@@ -78,11 +78,10 @@ export function ClienteForm(props: Props) {
       )
       .then((res: AxiosResponse<ClienteDTO[]>) => {
         console.log(res);
-        setDisebleBtn(true);
         props.setReload((previus) => !previus);
       })
       .catch((err) => {
-        setDisebleBtn(true);
+        setDisebleBtn(false);
         console.error(err);
         toast({
           title: "Algo deu errado",
