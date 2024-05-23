@@ -20,6 +20,9 @@ import BASE_URL from "@/utils/BASE_URL";
 import axios, { AxiosResponse } from "axios";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/router";
+import { Toaster } from "./ui/toaster";
+import { ToastAction } from "@radix-ui/react-toast";
+import { useToast } from "./ui/use-toast";
 
 const formSchema = z.object({
   username: z
@@ -53,7 +56,11 @@ export function ClienteForm(props: Props) {
     },
   });
 
+  const { toast } = useToast();
+
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setDisebleBtn(false);
+
     axios
       .post(
         `${BASE_URL}/clientes`,
@@ -75,7 +82,17 @@ export function ClienteForm(props: Props) {
         props.setReload((previus) => !previus);
       })
       .catch((err) => {
+        setDisebleBtn(true);
         console.error(err);
+        toast({
+          title: "Algo deu errado",
+          description: `verifique as informações preenchidas - ${Date.now()}`,
+          action: (
+            <ToastAction altText="tentar novamente">
+              tentar novamente
+            </ToastAction>
+          ),
+        });
       });
   }
 
@@ -132,6 +149,7 @@ export function ClienteForm(props: Props) {
           )}
         </div>
       </form>
+      <Toaster />
     </Form>
   );
 }
